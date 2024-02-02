@@ -1,13 +1,16 @@
 import readline from 'readline';
 import {
   dirs,
+  printAvailableCommands,
   exitFileManager,
   changeDirectory,
   printWorkingDirectory,
   listFiles,
   goBackDir,
-  readFile
+  readFile,
+  createFile
 } from './fileManagerFunctions/managerFunctions.js';
+import { isCurCommand, hasCommand } from './utils/helperFunctions.js';
 
 const args = process.argv.slice(2);
 const userNameArgs = args.find((arg) => arg.includes('--username')) ?? '';
@@ -18,16 +21,8 @@ if (!userName.length) {
 }
 
 console.log(`Welcome to the File Manager, ${userName}!\n`);
-
 console.log(`You are currently in ${dirs.startDir}\n`);
-
-console.log('Available commands:');
-console.log('ls - List files and directories');
-console.log('cd <dir> or <dir/childDir/../..> - Change current directory');
-console.log('pwd - Print current working directory');
-console.log('.exit - Exit the File Manager');
-console.log('up - Go upper from current directory');
-console.log('cat - <fileName.format> or <dir/childDir/fileName.format>Go - read file\n');
+printAvailableCommands();
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -37,23 +32,25 @@ const rl = readline.createInterface({
 rl.on('line', (input) => {
   const command = input.trim();
 
+  if (!hasCommand(command)) {
+    console.log('Invalid input. Try again.');
+  }
+
   if (command.startsWith('cd')) {
-    const isCurCommand = command.split(' ').length >= 2;
-    if (isCurCommand) {
+    if (isCurCommand(command)) {
       changeDirectory(command.split(' ').slice(1));
-    } else {
-      console.log('Invalid input. Try again.');
-      return;
     }
   }
 
   if (command.startsWith('cat')) {
-    const isCurCommand = command.split(' ').length === 2;
-    if (isCurCommand) {
-      readFile(command.split(' ')[1]);
-    } else {
-      console.log('Invalid input. Try again.');
-      return;
+    if (isCurCommand(command)) {
+      readFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('add')) {
+    if (isCurCommand(command)) {
+      createFile(command.split(' ').slice(1));
     }
   }
 
@@ -66,13 +63,14 @@ rl.on('line', (input) => {
       return exitFileManager(userName);
     case 'up':
       return goBackDir();
-    // default:
+    case 'help':
+      return printAvailableCommands();
   }
 });
 
-// rl.on('history', async () => {
-//   console.log(`\nYou are currently in ${dirs.curDir}\n`);
-// });
+rl.on('history', async () => {
+  console.log(`\nYou are currently in ${dirs.curDir}\n`);
+});
 
 rl.on('close', () => {
   exitFileManager(userName);
