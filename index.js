@@ -1,28 +1,33 @@
 import readline from 'readline';
 import {
+  dirs,
   exitFileManager,
-  printWorkingDirectory,
   changeDirectory,
+  printWorkingDirectory,
   listFiles,
-  goBackDir
-} from './utils/helpersFunctions.js';
+  goBackDir,
+  readFile
+} from './fileManagerFunctions/managerFunctions.js';
 
 const args = process.argv.slice(2);
-const userNameArgs = args.find((arg) => arg.includes('--username'));
-const userName = userNameArgs.split('=')[1];
+const userNameArgs = args.find((arg) => arg.includes('--username')) ?? '';
+const userName = userNameArgs.length ? userNameArgs.split('=')[1] : '';
 
-let curDir = process.cwd();
+if (!userName.length) {
+  throw new Error('Enter your name');
+}
 
 console.log(`Welcome to the File Manager, ${userName}!\n`);
 
-console.log(`You are currently in ${curDir}\n`);
+console.log(`You are currently in ${dirs.startDir}\n`);
 
 console.log('Available commands:');
 console.log('ls - List files and directories');
-console.log('cd <directory> - Change current directory');
+console.log('cd <dir> or <dir/childDir/../..> - Change current directory');
 console.log('pwd - Print current working directory');
-console.log('.exit - Exit the File Manager\n');
-console.log('up - Go upper from current directory\n');
+console.log('.exit - Exit the File Manager');
+console.log('up - Go upper from current directory');
+console.log('cat - <fileName.format> or <dir/childDir/fileName.format>Go - read file\n');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -31,6 +36,26 @@ const rl = readline.createInterface({
 
 rl.on('line', (input) => {
   const command = input.trim();
+
+  if (command.startsWith('cd')) {
+    const isCurCommand = command.split(' ').length >= 2;
+    if (isCurCommand) {
+      changeDirectory(command.split(' ').slice(1));
+    } else {
+      console.log('Invalid input. Try again.');
+      return;
+    }
+  }
+
+  if (command.startsWith('cat')) {
+    const isCurCommand = command.split(' ').length === 2;
+    if (isCurCommand) {
+      readFile(command.split(' ')[1]);
+    } else {
+      console.log('Invalid input. Try again.');
+      return;
+    }
+  }
 
   switch (command) {
     case 'ls':
@@ -41,25 +66,13 @@ rl.on('line', (input) => {
       return exitFileManager(userName);
     case 'up':
       return goBackDir();
-    default:
-      if (command.startsWith('cd')) {
-        const isCurCommand = command.split(' ').length >= 2;
-        if (isCurCommand) {
-          changeDirectory(command.split(' ')[1]);
-        } else {
-          console.log('Invalid input. Try again.');
-          break;
-        }
-      } else {
-        console.log('Invalid input. Try again.');
-        break;
-      }
+    // default:
   }
 });
 
-rl.on('history', () => {
-  printWorkingDirectory();
-});
+// rl.on('history', async () => {
+//   console.log(`\nYou are currently in ${dirs.curDir}\n`);
+// });
 
 rl.on('close', () => {
   exitFileManager(userName);
