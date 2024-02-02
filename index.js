@@ -10,7 +10,8 @@ import {
   readFile,
   createFile,
   renameFile,
-  copyFile
+  copyFile,
+  moveFile
 } from './fileManagerFunctions/managerFunctions.js';
 import { isCurCommand, checkCommand } from './utils/helperFunctions.js';
 
@@ -67,6 +68,12 @@ rl.on('line', (input) => {
   if (command.startsWith('cp')) {
     if (isCurCommand(command)) {
       copyFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('mv')) {
+    if (isCurCommand(command)) {
+      moveFile(command.split(' ').slice(1));
     }
   }
 

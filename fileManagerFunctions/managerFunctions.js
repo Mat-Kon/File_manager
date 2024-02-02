@@ -4,14 +4,14 @@ import {
   access,
   constants,
   writeFile,
-  rename
+  rename,
+  unlink
 } from 'node:fs/promises';
 import  { pipeline } from 'node:stream/promises';
 import fs from 'fs';
 import  path from 'path';
 import os from 'os';
 import { isExist, checkCurArgs } from '../utils/helperFunctions.js';
-import { basename } from 'node:path';
 
 export const ROOT_DIR = os.homedir();
 export const dirs = {
@@ -32,9 +32,10 @@ const printAvailableCommands = () => {
   console.log('add - <fileName.format> - Create empty file in current working directory');
   console.log('rn - <path_to_file> <new_fileName.format> - Rename file');
   console.log('cp - <path_to_file> <path_to_directory> - copy file\n');
+  console.log('mv - <path_to_file> <path_to_directory> - move file\n');
   console.log('Example <path_to_file> - childDir/../fileName.format');
   console.log('Example <path_to_directory> - childDir/../\n');
-}
+};
 
 const listFiles = async () => {
   const absolutePath = path.resolve(dirs.curDir);
@@ -124,7 +125,7 @@ const readFile = async (pathToFile) => {
       console.error('Operation failed');
   });
   return;
-}
+};
 
 const createFile = async (fileName) => {
   const pathToFile = path.resolve(dirs.curDir, fileName.join(' '));
@@ -144,7 +145,7 @@ const createFile = async (fileName) => {
       console.log(error.message);
     }
   }
-}
+};
 
 const renameFile = async (args) => {
   checkCurArgs(args);
@@ -169,7 +170,7 @@ const renameFile = async (args) => {
       console.log(error.message);
     }
   }
-}
+};
 
 const copyFile = async (args) => {
   checkCurArgs(args);
@@ -197,7 +198,22 @@ const copyFile = async (args) => {
       console.log(`File ${fileName} is exist in ${path.resolve(dirs.curDir, args[1])}`);
     }
   }
-}
+};
+
+const moveFile = async (args) => {
+  checkCurArgs(args);
+
+  const pathToFile = path.resolve(dirs.curDir, args[0]);
+  const fileName = path.basename(pathToFile);
+
+  try {
+    await copyFile(args);
+    await unlink(pathToFile);
+    console.log(`File ${fileName} is move to ${path.resolve(dirs.curDir, args[1])}`)
+  } catch {
+    console.error('Operation failed');
+  }
+};
 
 export {
   printAvailableCommands,
@@ -209,5 +225,6 @@ export {
   printWorkingDirectory,
   createFile,
   renameFile,
-  copyFile
+  copyFile,
+  moveFile
 }
