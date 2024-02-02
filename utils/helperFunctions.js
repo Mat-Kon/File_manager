@@ -11,7 +11,8 @@ const CUR_COMMANDS = [
   'help',
   'rn',
   'cp',
-  'mv'
+  'mv',
+  'rm'
 ];
 
 export const isCurCommand = ( command ) => {

@@ -31,8 +31,9 @@ const printAvailableCommands = () => {
   console.log('cat - <fileName.format> or <path_to_file> - read file');
   console.log('add - <fileName.format> - Create empty file in current working directory');
   console.log('rn - <path_to_file> <new_fileName.format> - Rename file');
-  console.log('cp - <path_to_file> <path_to_directory> - copy file\n');
-  console.log('mv - <path_to_file> <path_to_directory> - move file\n');
+  console.log('cp - <path_to_file> <path_to_directory> - copy file');
+  console.log('mv - <path_to_file> <path_to_directory> - move file');
+  console.log('rm - <fileName.format> or <path_to_file> - remove file\n');
   console.log('Example <path_to_file> - childDir/../fileName.format');
   console.log('Example <path_to_directory> - childDir/../\n');
 };
@@ -80,13 +81,15 @@ const listFiles = async () => {
 
 const changeDirectory = async (newDir) => {
   const targetDir = path.resolve(dirs.curDir, newDir.join(' '));
-
-  await isExist(targetDir);
-  const isDir = (await stat(targetDir)).isDirectory();
-  if (isDir) {
-    dirs.curDir = targetDir;
-    console.log(`Changed directory to ${dirs.curDir}\n`);
-    return;
+  try {
+    await isExist(targetDir);
+    const isDir = (await stat(targetDir)).isDirectory();
+    if (isDir) {
+      dirs.curDir = targetDir;
+      console.log(`Changed directory to ${dirs.curDir}\n`);
+    }
+  } catch {
+    console.log('Operation failed');
   }
 };
 
@@ -115,6 +118,8 @@ const printWorkingDirectory = () => {
 
 const readFile = async (pathToFile) => {
   const resolvePath = path.resolve(dirs.curDir, pathToFile.join(' '));
+  await isExist(resolvePath);
+
   const readStream = fs.createReadStream(resolvePath, { encoding: 'utf8' });
 
   readStream.on('data', chunk => {
@@ -190,6 +195,7 @@ const copyFile = async (args) => {
           fs.createReadStream(pathToFile),
           fs.createWriteStream(pathToNewFile)
         );
+        console.log(`File ${fileName} is copied to ${path.resolve(dirs.curDir, args[1])}`);
       } catch (copyError) {
         console.error(copyError.message);
       }
@@ -215,6 +221,19 @@ const moveFile = async (args) => {
   }
 };
 
+const removeFile = async (pathToFile) => {
+  const resolvePath = path.resolve(dirs.curDir, pathToFile.join(' '));
+  const fileName = path.basename(resolvePath);
+
+  try {
+    await isExist(resolvePath);
+    await unlink(resolvePath);
+    console.log(`File ${fileName} is remove`);
+  } catch {
+    console.error('Operation failed');
+  }
+};
+
 export {
   printAvailableCommands,
   exitFileManager,
@@ -226,5 +245,6 @@ export {
   createFile,
   renameFile,
   copyFile,
-  moveFile
+  moveFile,
+  removeFile
 }

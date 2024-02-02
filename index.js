@@ -11,7 +11,8 @@ import {
   createFile,
   renameFile,
   copyFile,
-  moveFile
+  moveFile,
+  removeFile
 } from './fileManagerFunctions/managerFunctions.js';
 import { isCurCommand, checkCommand } from './utils/helperFunctions.js';
 
@@ -74,6 +75,12 @@ rl.on('line', (input) => {
   if (command.startsWith('mv')) {
     if (isCurCommand(command)) {
       moveFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('rm')) {
+    if (isCurCommand(command)) {
+      removeFile(command.split(' ').slice(1));
     }
   }
 
