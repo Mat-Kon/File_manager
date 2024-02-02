@@ -9,9 +9,10 @@ import {
   goBackDir,
   readFile,
   createFile,
-  renameFile
+  renameFile,
+  copyFile
 } from './fileManagerFunctions/managerFunctions.js';
-import { isCurCommand, hasCommand } from './utils/helperFunctions.js';
+import { isCurCommand, checkCommand } from './utils/helperFunctions.js';
 
 const args = process.argv.slice(2);
 const userNameArgs = args.find((arg) => arg.includes('--username')) ?? '';
@@ -23,6 +24,7 @@ if (!userName.length) {
 
 console.log(`Welcome to the File Manager, ${userName}!\n`);
 console.log(`You are currently in ${dirs.startDir}\n`);
+
 printAvailableCommands();
 
 const rl = readline.createInterface({
@@ -32,8 +34,9 @@ const rl = readline.createInterface({
 
 rl.on('line', (input) => {
   const command = input.trim();
+  const isCommand = checkCommand(command);
 
-  if (!hasCommand(command)) {
+  if (!isCommand) {
     console.log('Invalid input. Try again.');
   }
 
@@ -58,6 +61,12 @@ rl.on('line', (input) => {
   if (command.startsWith('rn')) {
     if (isCurCommand(command)) {
       renameFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('cp')) {
+    if (isCurCommand(command)) {
+      copyFile(command.split(' ').slice(1));
     }
   }
 
