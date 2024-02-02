@@ -3,11 +3,13 @@ import {
   stat,
   access,
   constants,
-  writeFile
+  writeFile,
+  rename
 } from 'node:fs/promises';
 import fs from 'fs';
 import  path from 'path';
 import os from 'os';
+import { isExist } from '../utils/helperFunctions.js';
 
 export const ROOT_DIR = os.homedir();
 export const dirs = {
@@ -20,12 +22,14 @@ const printAvailableCommands = () => {
   console.log('Available commands:');
   console.log('help - print available commands');
   console.log('ls - List files and directories');
-  console.log('cd <dir> or <dir/childDir/../..> - Change current directory');
+  console.log('cd <dir> or <childDir/../..> - Change current directory');
   console.log('pwd - Print current working directory');
   console.log('.exit - Exit the File Manager');
   console.log('up - Go upper from current directory');
-  console.log('cat - <fileName.format> or <dir/childDir/fileName.format>Go - read file');
-  console.log('add - <fileName.format> - Create empty file in current working directory\n');
+  console.log('cat - <fileName.format> or <path_to_file> - read file');
+  console.log('add - <fileName.format> - Create empty file in current working directory');
+  console.log('rn - <path_to_file> <new_fileName.format> - Rename file\n');
+  console.log('Example <path_to_file> - childDir/../fileName.format\n');
 }
 
 const listFiles = async () => {
@@ -142,6 +146,42 @@ const createFile = async (fileName) => {
   }
 }
 
+const renameFile = async (args) => {
+  const isCurArgs = args.length === 2;
+
+  if (args.length === 1) {
+    console.log('Operation failed');
+    console.log('Need two arguments');
+    return;
+  }
+
+  if (!isCurArgs) {
+    console.log('Operation failed');
+    console.log('There should be no spaces in the file name or folder name!');
+    return;
+  }
+  const pathToFile = path.resolve(dirs.curDir, args[0]);
+  const __dirname = path.dirname(pathToFile);
+  const pathToNewFile = path.resolve(__dirname, args[1]);
+  
+  try {
+    isExist(pathToFile);
+    await access(pathToNewFile, constants.F_OK);
+		throw new Error('Operation failed');
+  } catch(error) {
+    if (error.code === 'ENOENT') {
+      try {
+        await rename(pathToFile, pathToNewFile);
+        console.log(`File is rename to ${args[1]}`)
+      } catch (writeError) {
+        console.error(writeError.message);
+      }
+    } else {
+      console.log(error.message);
+    }
+  }
+}
+
 export {
   printAvailableCommands,
   exitFileManager,
@@ -150,5 +190,6 @@ export {
   goBackDir,
   readFile,
   printWorkingDirectory,
-  createFile
+  createFile,
+  renameFile
 }

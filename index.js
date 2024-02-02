@@ -8,7 +8,8 @@ import {
   listFiles,
   goBackDir,
   readFile,
-  createFile
+  createFile,
+  renameFile
 } from './fileManagerFunctions/managerFunctions.js';
 import { isCurCommand, hasCommand } from './utils/helperFunctions.js';
 
@@ -51,6 +52,12 @@ rl.on('line', (input) => {
   if (command.startsWith('add')) {
     if (isCurCommand(command)) {
       createFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('rn')) {
+    if (isCurCommand(command)) {
+      renameFile(command.split(' ').slice(1));
     }
   }
 
