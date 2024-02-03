@@ -14,6 +14,7 @@ import { printWelcomeMessages, printAvailableCommands, exitFileManager } from '.
 import { isCurCommand, checkCommand } from './utils/helperFunctions.js';
 import { performOSOperation } from './operationSystem/osFunctions.js';
 import { calculateHash } from './hash/calculateHash.js';
+import { compressionFile, decompressionFile } from './compression/compressionFunctions.js';
 
 const args = process.argv.slice(2);
 const userNameArgs = args.find((arg) => arg.includes('--username')) ?? '';
@@ -91,6 +92,18 @@ rl.on('line', (input) => {
   if (command.startsWith('hash')) {
     if (isCurCommand(command)) {
       calculateHash(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('compress')) {
+    if (isCurCommand(command)) {
+      compressionFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('decompress')) {
+    if (isCurCommand(command)) {
+      decompressionFile(command.split(' ').slice(1));
     }
   }
 

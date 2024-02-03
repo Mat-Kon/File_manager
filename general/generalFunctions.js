@@ -17,6 +17,8 @@ const printAvailableCommands = () => {
   console.log('cp - <path_to_file> <path_to_directory> - Copy file');
   console.log('mv - <path_to_file> <path_to_directory> - Move file');
   console.log('hash - <fileName.format> or <path_to_file> - Calculate hash for file and print');
+  console.log('compress - <path_to_file> <path_to_directory> - Compress file');
+  console.log('decompress - <path_to_file> <path_to_new_file> - Decompress file');
   console.log('os - Print operating system info:\n--EOL\n--cpus\n--homedir\n--username\n--architecture\n');
   console.log('Example <path_to_file> - childDir/../fileName.format');
   console.log('Example <path_to_directory> - childDir/../\n');

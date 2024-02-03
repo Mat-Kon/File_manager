@@ -14,7 +14,9 @@ const CUR_COMMANDS = [
   'mv',
   'rm',
   'os',
-  'hash'
+  'hash',
+  'compress',
+  'decompress'
 ];
 
 export const isCurCommand = ( command ) => {

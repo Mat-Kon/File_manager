@@ -5,13 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.js"
   },
   "author": "Matveev Konstantin",
   "license": "ISC",
-  "type": "module",
-  "devDependencies": {
-    "nodemon": "^3.0.3"
-  }
+  "type": "module"
 }
