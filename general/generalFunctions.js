@@ -11,12 +11,12 @@ const printAvailableCommands = () => {
   console.log('pwd - Print current working directory');
   console.log('.exit - Exit the File Manager');
   console.log('up - Go upper from current directory');
-  console.log('cat - <fileName.format> or <path_to_file> - read file');
+  console.log('cat - <fileName.format> or <path_to_file> - Read file');
   console.log('add - <fileName.format> - Create empty file in current working directory');
   console.log('rn - <path_to_file> <new_fileName.format> - Rename file');
-  console.log('cp - <path_to_file> <path_to_directory> - copy file');
-  console.log('mv - <path_to_file> <path_to_directory> - move file');
-  console.log('rm - <fileName.format> or <path_to_file> - remove file\n');
+  console.log('cp - <path_to_file> <path_to_directory> - Copy file');
+  console.log('mv - <path_to_file> <path_to_directory> - Move file');
+  console.log('os - Print operating system info:\n--EOL\n--cpus\n--homedir\n--username\n--architecture\n');
   console.log('Example <path_to_file> - childDir/../fileName.format');
   console.log('Example <path_to_directory> - childDir/../\n');
 };

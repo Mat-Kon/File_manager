@@ -12,6 +12,7 @@ import {
 import { changeDirectory, goBackDir, printWorkingDirectory } from './navigation/navigationFunctions.js';
 import { printWelcomeMessages, printAvailableCommands, exitFileManager } from './general/generalFunctions.js';
 import { isCurCommand, checkCommand } from './utils/helperFunctions.js';
+import { performOSOperation } from './operationSystem/osFunctions.js';
 
 const args = process.argv.slice(2);
 const userNameArgs = args.find((arg) => arg.includes('--username')) ?? '';
@@ -77,6 +78,12 @@ rl.on('line', (input) => {
   if (command.startsWith('rm')) {
     if (isCurCommand(command)) {
       removeFile(command.split(' ').slice(1));
+    }
+  }
+
+  if (command.startsWith('os')) {
+    if (isCurCommand(command)) {
+      performOSOperation(command.split(' ').slice(1));
     }
   }
 
