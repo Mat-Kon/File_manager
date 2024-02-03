@@ -13,7 +13,8 @@ const CUR_COMMANDS = [
   'cp',
   'mv',
   'rm',
-  'os'
+  'os',
+  'hash'
 ];
 
 export const isCurCommand = ( command ) => {

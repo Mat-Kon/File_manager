@@ -16,6 +16,7 @@ const printAvailableCommands = () => {
   console.log('rn - <path_to_file> <new_fileName.format> - Rename file');
   console.log('cp - <path_to_file> <path_to_directory> - Copy file');
   console.log('mv - <path_to_file> <path_to_directory> - Move file');
+  console.log('hash - <fileName.format> or <path_to_file> - Calculate hash for file and print');
   console.log('os - Print operating system info:\n--EOL\n--cpus\n--homedir\n--username\n--architecture\n');
   console.log('Example <path_to_file> - childDir/../fileName.format');
   console.log('Example <path_to_directory> - childDir/../\n');
