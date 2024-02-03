@@ -1,7 +1,8 @@
 import os from 'os';
+import path from 'path';
 
-export const ROOT_DIR = os.homedir();
+export const ROOT_DIR = path.resolve(os.homedir(), '/');
 export const dirs = {
-  startDir: ROOT_DIR,
-  curDir: ROOT_DIR
+  startDir: os.homedir(),
+  curDir: os.homedir()
 }
