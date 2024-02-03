@@ -10,33 +10,9 @@ import {
 import  { pipeline } from 'node:stream/promises';
 import fs from 'fs';
 import  path from 'path';
-import os from 'os';
 import { isExist, checkCurArgs } from '../utils/helperFunctions.js';
+import { dirs } from '../utils/globalVariables.js';
 
-export const ROOT_DIR = os.homedir();
-export const dirs = {
-  startDir: ROOT_DIR,
-  curDir: ROOT_DIR
-}
-
-
-const printAvailableCommands = () => {
-  console.log('Available commands:');
-  console.log('help - print available commands');
-  console.log('ls - List files and directories');
-  console.log('cd <dir> or <path_to_directory> - Change current directory');
-  console.log('pwd - Print current working directory');
-  console.log('.exit - Exit the File Manager');
-  console.log('up - Go upper from current directory');
-  console.log('cat - <fileName.format> or <path_to_file> - read file');
-  console.log('add - <fileName.format> - Create empty file in current working directory');
-  console.log('rn - <path_to_file> <new_fileName.format> - Rename file');
-  console.log('cp - <path_to_file> <path_to_directory> - copy file');
-  console.log('mv - <path_to_file> <path_to_directory> - move file');
-  console.log('rm - <fileName.format> or <path_to_file> - remove file\n');
-  console.log('Example <path_to_file> - childDir/../fileName.format');
-  console.log('Example <path_to_directory> - childDir/../\n');
-};
 
 const listFiles = async () => {
   const absolutePath = path.resolve(dirs.curDir);
@@ -77,43 +53,6 @@ const listFiles = async () => {
   } catch (error) {
     console.error('Operation failed');
   }
-};
-
-const changeDirectory = async (newDir) => {
-  const targetDir = path.resolve(dirs.curDir, newDir.join(' '));
-  try {
-    await isExist(targetDir);
-    const isDir = (await stat(targetDir)).isDirectory();
-    if (isDir) {
-      dirs.curDir = targetDir;
-      console.log(`Changed directory to ${dirs.curDir}\n`);
-    }
-  } catch {
-    console.log('Operation failed');
-  }
-};
-
-const goBackDir = () => {
-  const parentDir = path.resolve(dirs.curDir, '..');
-
-  if (dirs.curDir === ROOT_DIR) {
-    console.error('Operation failed');
-    return;
-  }
-
-  if (parentDir) {
-    dirs.curDir = parentDir;
-    return;
-  }
-};
-
-const exitFileManager = (username) => {
-  console.log(`Thank you for using File Manager, ${username}, goodbye!`);
-  process.exit(0);
-};
-
-const printWorkingDirectory = () => {
-  console.log(`\nYou are currently in ${dirs.curDir}\n`);
 };
 
 const readFile = async (pathToFile) => {
@@ -200,8 +139,8 @@ const copyFile = async (args) => {
         console.error(copyError.message);
       }
     } else {
-      console.log(error.message);
       console.log(`File ${fileName} is exist in ${path.resolve(dirs.curDir, args[1])}`);
+      throw new Error(error.message);
     }
   }
 };
@@ -235,13 +174,8 @@ const removeFile = async (pathToFile) => {
 };
 
 export {
-  printAvailableCommands,
-  exitFileManager,
-  changeDirectory,
   listFiles,
-  goBackDir,
   readFile,
-  printWorkingDirectory,
   createFile,
   renameFile,
   copyFile,

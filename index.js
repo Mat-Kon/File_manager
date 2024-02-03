@@ -1,19 +1,16 @@
 import readline from 'readline';
+import { dirs } from './utils/globalVariables.js';
 import {
-  dirs,
-  printAvailableCommands,
-  exitFileManager,
-  changeDirectory,
-  printWorkingDirectory,
   listFiles,
-  goBackDir,
   readFile,
   createFile,
   renameFile,
   copyFile,
   moveFile,
   removeFile
-} from './fileManagerFunctions/managerFunctions.js';
+} from './fileManager/managerFunctions.js';
+import { changeDirectory, goBackDir, printWorkingDirectory } from './navigation/navigationFunctions.js';
+import { printWelcomeMessages, printAvailableCommands, exitFileManager } from './general/generalFunctions.js';
 import { isCurCommand, checkCommand } from './utils/helperFunctions.js';
 
 const args = process.argv.slice(2);
@@ -24,8 +21,7 @@ if (!userName.length) {
   throw new Error('Enter your name');
 }
 
-console.log(`Welcome to the File Manager, ${userName}!\n`);
-console.log(`You are currently in ${dirs.startDir}\n`);
+printWelcomeMessages(userName, dirs.startDir);
 
 printAvailableCommands();
 
